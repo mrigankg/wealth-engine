@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline Personal Finance Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Chart.js is served completely offline from local vendor directory -->
+    <script src="vendor/chart.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="logo-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                </div>
+                <h2>Antigravity Pay</h2>
+            </div>
+            <nav class="nav-menu">
+                <button class="nav-item active" id="btn-tab-dashboard" onclick="switchTab('dashboard')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+                    <span>Dashboard</span>
+                </button>
+                <button class="nav-item" id="btn-tab-upload" onclick="switchTab('upload')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+                    <span>Upload Statement</span>
+                </button>
+                <button class="nav-item" id="btn-tab-ledger" onclick="switchTab('ledger')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                    <span>Ledger Entries</span>
+                </button>
+                <button class="nav-item" id="btn-tab-investments" onclick="switchTab('investments')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83M22 12A10 10 0 0 0 12 2v10z"/></svg>
+                    <span>Investments</span>
+                </button>
+                <button class="nav-item" id="btn-tab-fds" onclick="switchTab('fds')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2" ry="2"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+                    <span>Fixed Deposits</span>
+                </button>
+                <button class="nav-item" id="btn-tab-gold" onclick="switchTab('gold')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 13L2 9z"/></svg>
+                    <span>Gold & Bullion</span>
+                </button>
+                <button class="nav-item" id="btn-tab-pf" onclick="switchTab('pf')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                    <span>Provident Funds</span>
+                </button>
+                <button class="nav-item" id="btn-tab-realestate" onclick="switchTab('realestate')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                    <span>Real Estate</span>
+                </button>
+                <button class="nav-item" id="btn-tab-insurance" onclick="switchTab('insurance')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    <span>Insurance Policies</span>
+                </button>
+                <button class="nav-item" id="btn-tab-templates" onclick="switchTab('templates')">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                    <span>Config Templates</span>
+                </button>
+            </nav>
+            <div class="security-badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <span>100% Offline & Secure</span>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="top-header">
+                <div class="welcome">
+                    <h1 id="page-title">Dashboard Overview</h1>
+                    <p id="page-subtitle">Welcome back. Your financial vault is local and secure.</p>
+                </div>
+                <div class="connection-status">
+                    <span class="status-indicator"></span>
+                    <span class="status-text">Vault Mode (No Network)</span>
+                </div>
+            </header>
+
+            <!-- 1. DASHBOARD TAB -->
+            <section id="tab-dashboard" class="tab-panel active">
+                <!-- Summary Metrics Grid -->
+                <div class="metrics-grid">
+                    <div class="metric-card glass">
+                        <div class="card-header">
+                            <span class="card-label">Calculated Net Worth</span>
+                            <div class="icon-circle net-worth-icon">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                            </div>
+                        </div>
+                        <h3 class="card-value" id="val-net-worth">₹0.00</h3>
+                        <p class="card-subtext">Total assets minus card debts</p>
+                    </div>
+                    <div class="metric-card glass">
+                        <div class="card-header">
+                            <span class="card-label">Liquid Cash Balance</span>
+                            <div class="icon-circle cash-icon">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/></svg>
+                            </div>
+                        </div>
+                        <h3 class="card-value" id="val-cash">₹0.00</h3>
+                        <p class="card-subtext">Across all bank accounts</p>
+                    </div>
+                    <div class="metric-card glass">
+                        <div class="card-header">
+                            <span class="card-label">Credit Card Outstanding</span>
+                            <div class="icon-circle cc-icon">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                            </div>
+                        </div>
+                        <h3 class="card-value debt" id="val-cc-debt">₹0.00</h3>
+                        <p class="card-subtext">Owed to credit card institutions</p>
+                    </div>
+                    <div class="metric-card glass">
+                        <div class="card-header">
+                            <span class="card-label">Investment Portfolio</span>
+                            <div class="icon-circle invest-icon">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                            </div>
+                        </div>
+                        <h3 class="card-value" id="val-invest-val">₹0.00</h3>
+                        <div class="pnl-container">
+                            <span class="pnl-badge positive" id="val-invest-pnl">₹0.00 (0.00%)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="charts-grid">
+                    <div class="chart-card glass">
+                        <h3>Asset Allocation</h3>
+                        <div class="chart-container">
+                            <canvas id="chart-allocation"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card glass">
+                        <h3>Income vs Expenses (Monthly)</h3>
+                        <div class="chart-container">
+                            <canvas id="chart-cashflow"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activities -->
+                <div class="dashboard-bottom-grid">
+                    <div class="recent-tx-card glass">
+                        <div class="card-title-bar">
+                            <h3>Recent Transactions</h3>
+                            <button class="text-btn" onclick="switchTab('ledger')">View All</button>
+                        </div>
+                        <div class="table-scroll">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Account</th>
+                                        <th>Description</th>
+                                        <th>Category</th>
+                                        <th class="num-col">Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recent-transactions-tbody">
+                                    <tr>
+                                        <td colspan="5" class="center-text mute-text">No transactions imported yet.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. UPLOAD STATEMENT TAB -->
+            <section id="tab-upload" class="tab-panel">
+                <div class="upload-split-container">
+                    <!-- Left: Upload Control -->
+                    <div class="upload-control-card glass">
+                        <h3>Upload Financial Data</h3>
+                        <p class="mute-text">Support formats: Bank/Card PDFs, Mutual Fund CAS PDFs, Stock Ledgers, saved receipt Emails (.eml), or CSV/Excel statements.</p>
+                        
+                        <div class="drop-zone" id="drop-zone">
+                            <div class="drop-zone-content">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+                                <p>Drag and drop statement file here or <span class="browse-link">browse files</span></p>
+                                <input type="file" id="file-input" style="display: none;" accept=".pdf,.csv,.xlsx,.xls,.eml,.html,.htm">
+                            </div>
+                        </div>
+
+                        <!-- Parsing Progress Indicator -->
+                        <div class="parsing-progress-box" id="parsing-progress" style="display: none;">
+                            <div class="progress-steps">
+                                <div class="step active" id="step-upload">
+                                    <div class="step-indicator">1</div>
+                                    <span>File Uploaded</span>
+                                </div>
+                                <div class="step" id="step-detect">
+                                    <div class="step-indicator">2</div>
+                                    <span>Layout Detected</span>
+                                </div>
+                                <div class="step" id="step-parse">
+                                    <div class="step-indicator">3</div>
+                                    <span>Transactions Parsed</span>
+                                </div>
+                            </div>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar-fill" id="progress-bar-fill"></div>
+                            </div>
+                            <p class="progress-status-text" id="progress-status-text">Processing file...</p>
+                        </div>
+                    </div>
+
+                    <!-- Right: Import Preview (populates after file uploads) -->
+                    <div class="preview-container" id="preview-container" style="display: none;">
+                        <div class="preview-card glass">
+                            <div class="preview-header">
+                                <div class="detected-badge">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                                    <span id="txt-detected-type">Detected Bank Statement</span>
+                                </div>
+                                <h3>Import Preview</h3>
+                            </div>
+                            
+                            <!-- Detected Account Sub-Form -->
+                            <div class="detected-account-form">
+                                <h4>Account Metadata</h4>
+                                <div class="form-row-grid">
+                                    <div class="form-group">
+                                        <label for="acc-name">Account Display Name</label>
+                                        <input type="text" id="acc-name">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="acc-inst">Institution</label>
+                                        <input type="text" id="acc-inst">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="acc-type">Account Type</label>
+                                        <select id="acc-type">
+                                            <option value="BANK">Bank Account</option>
+                                            <option value="CREDIT_CARD">Credit Card</option>
+                                            <option value="MUTUAL_FUND">Mutual Fund</option>
+                                            <option value="STOCK">Stocks</option>
+                                            <option value="FIXED_DEPOSIT">Fixed Deposit</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="acc-suffix">Identifier Suffix (Last 4 digits / Folio)</label>
+                                        <input type="text" id="acc-suffix">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Parsed Results Table -->
+                            <div class="parsed-results-section">
+                                <h4>Extracted Transactions (<span id="txt-preview-count">0</span>)</h4>
+                                <div class="table-scroll preview-table-container">
+                                    <!-- Normal Bank / Credit Card Table -->
+                                    <table class="data-table" id="preview-bank-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Description</th>
+                                                <th>Ref / Cheque</th>
+                                                <th>Category</th>
+                                                <th class="num-col">Withdrawal (Dr)</th>
+                                                <th class="num-col">Deposit (Cr)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="preview-bank-tbody"></tbody>
+                                    </table>
+
+                                    <!-- Investment Table (Mutual Funds / Stocks) -->
+                                    <table class="data-table" id="preview-investment-table" style="display: none;">
+                                        <thead>
+                                            <tr>
+                                                <th>Asset Name</th>
+                                                <th>Symbol / Code</th>
+                                                <th class="num-col">Trades Count</th>
+                                                <th class="num-col">Qty (Total)</th>
+                                                <th class="num-col">Avg Purchase NAV</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="preview-investment-tbody"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="preview-actions">
+                                <button class="btn secondary" onclick="cancelPreview()">Cancel</button>
+                                <button class="btn primary" onclick="confirmImport()">Confirm & Save to Vault</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. LEDGER ENTRIES TAB -->
+            <section id="tab-ledger" class="tab-panel">
+                <div class="ledger-container glass">
+                    <!-- Filters Toolbar -->
+                    <div class="ledger-toolbar">
+                        <div class="search-box">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                            <input type="text" id="ledger-search" placeholder="Search by merchant, narration, ref no..." onkeyup="filterLedger()">
+                        </div>
+                        <div class="filter-controls">
+                            <select id="ledger-filter-account" onchange="filterLedger()">
+                                <option value="">All Accounts</option>
+                            </select>
+                            <select id="ledger-filter-category" onchange="filterLedger()">
+                                <option value="">All Categories</option>
+                                <option value="Uncategorized">Uncategorized</option>
+                                <option value="Food & Dining">Food & Dining</option>
+                                <option value="Salary">Salary/Income</option>
+                                <option value="Utilities">Utilities/Bills</option>
+                                <option value="Investment">Investment outflow</option>
+                                <option value="Shopping">Shopping</option>
+                                <option value="Transport">Travel/Transport</option>
+                            </select>
+                            <button class="btn primary" onclick="openManualTxnModal()">+ Add Transaction</button>
+                        </div>
+                    </div>
+
+                    <!-- Ledger Table -->
+                    <div class="table-scroll ledger-table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Account</th>
+                                    <th>Description</th>
+                                    <th>Ref / Cheque</th>
+                                    <th>Category</th>
+                                    <th class="num-col">Dr (Spent)</th>
+                                    <th class="num-col">Cr (Received)</th>
+                                    <th class="num-col">Closing Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ledger-tbody">
+                                <tr>
+                                    <td colspan="8" class="center-text mute-text">No transactions loaded.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. INVESTMENTS TAB -->
+            <section id="tab-investments" class="tab-panel">
+                <div class="portfolio-container glass">
+                    <div class="portfolio-header flex-header">
+                        <div>
+                            <h3>Investment Holdings (Stocks & Mutual Funds)</h3>
+                            <p class="mute-text">Master portfolio view. Click on any holding to see individual trade ledger history.</p>
+                        </div>
+                        <button class="btn primary" onclick="openManualTradeModal()">+ Add Stock/MF Trade</button>
+                    </div>
+
+                    <div class="table-scroll">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Asset Name</th>
+                                    <th>Account / Broker</th>
+                                    <th>Symbol / Code</th>
+                                    <th class="num-col">Total Units / Shares</th>
+                                    <th class="num-col">Avg Cost Price</th>
+                                    <th class="num-col">Total Invested</th>
+                                    <th class="num-col">Current Market Price</th>
+                                    <th class="num-col">Current Value</th>
+                                    <th class="num-col">P&L Gain/Loss</th>
+                                </tr>
+                            </thead>
+                            <tbody id="investments-tbody">
+                                <tr>
+                                    <td colspan="9" class="center-text mute-text">No investment holdings registered. Upload a CAS or Stock ledger statement.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Sliding Drawer or Modal for child trade ledger details -->
+                <div class="modal" id="trades-modal" style="display: none;">
+                    <div class="modal-content glass">
+                        <div class="modal-header">
+                            <h3 id="txt-trades-asset-title">Trades History for TCS</h3>
+                            <button class="close-btn" onclick="closeTradesModal()">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="table-scroll">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Type</th>
+                                            <th class="num-col">Quantity</th>
+                                            <th class="num-col">Execution Price</th>
+                                            <th class="num-col">Total Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="trades-tbody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. FIXED DEPOSITS TAB -->
+            <section id="tab-fds" class="tab-panel">
+                <div class="fd-container glass">
+                    <div class="fd-header flex-header">
+                        <div>
+                            <h3>Fixed Deposit Registry</h3>
+                            <p class="mute-text">Fixed Deposit registry details.</p>
+                        </div>
+                        <button class="btn primary" onclick="openManualFDModal()">+ Add Fixed Deposit</button>
+                    </div>
+
+                    <div class="table-scroll">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>FD Account Number</th>
+                                    <th>Institution / Bank</th>
+                                    <th class="num-col">Principal Amount</th>
+                                    <th class="num-col">Maturity Amount</th>
+                                    <th class="num-col">Interest Rate</th>
+                                    <th>Deposit Date</th>
+                                    <th>Maturity Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="fds-tbody">
+                                <tr>
+                                    <td colspan="8" class="center-text mute-text">No active Fixed Deposits imported.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- GOLD & BULLION TAB -->
+            <section id="tab-gold" class="tab-panel">
+                <div class="portfolio-container glass">
+                    <div class="portfolio-header flex-header">
+                        <div>
+                            <h3>Gold & Precious Metals Holdings</h3>
+                            <p class="mute-text">Manage physical gold bars, coins, sovereign bonds (SGB), or Gold ETFs.</p>
+                        </div>
+                        <button class="btn primary" onclick="openManualGoldModal()">+ Add Gold Asset</button>
+                    </div>
+                    <div class="table-scroll">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Asset Type</th>
+                                    <th>Institution / Storage</th>
+                                    <th>Weight (Grams)</th>
+                                    <th>Purity (Carats)</th>
+                                    <th class="num-col">Invested Amount</th>
+                                    <th class="num-col">Price per Gram</th>
+                                    <th class="num-col">Current Value</th>
+                                    <th class="num-col">Absolute P&L</th>
+                                </tr>
+                            </thead>
+                            <tbody id="gold-tbody">
+                                <tr>
+                                    <td colspan="8" class="center-text mute-text">No gold holdings logged.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PROVIDENT FUNDS TAB -->
+            <section id="tab-pf" class="tab-panel">
+                <div class="portfolio-container glass">
+                    <div class="portfolio-header flex-header">
+                        <div>
+                            <h3>Provident Funds (EPF / PPF / NPS)</h3>
+                            <p class="mute-text">Track your retirement provident funds, lock-ins, and compound gains.</p>
+                        </div>
+                        <button class="btn primary" onclick="openManualPFModal()">+ Add PF Account</button>
+                    </div>
+                    <div class="table-scroll">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Fund Type</th>
+                                    <th>Institution / Account Name</th>
+                                    <th class="num-col">Current Balance</th>
+                                    <th class="num-col">Monthly Contribution</th>
+                                    <th class="num-col">Interest Rate</th>
+                                    <th>Last Updated Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pf-tbody">
+                                <tr>
+                                    <td colspan="6" class="center-text mute-text">No provident funds accounts configured.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- REAL ESTATE TAB -->
+            <section id="tab-realestate" class="tab-panel">
+                <div class="portfolio-container glass">
+                    <div class="portfolio-header flex-header">
+                        <div>
+                            <h3>Real Estate Portfolio</h3>
+                            <p class="mute-text">Track properties, physical valuation, rental inflows, and mortgage debts.</p>
+                        </div>
+                        <button class="btn primary" onclick="openManualRealEstateModal()">+ Add Property</button>
+                    </div>
+                    <div class="table-scroll">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Property Name</th>
+                                    <th>Lender / Bank (Institution)</th>
+                                    <th class="num-col">Purchase Price</th>
+                                    <th class="num-col">Current Value</th>
+                                    <th class="num-col">Associated Loan</th>
+                                    <th class="num-col">Property Equity</th>
+                                    <th class="num-col">Monthly Rental Inflow</th>
+                                    <th>Occupancy Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="realestate-tbody">
+                                <tr>
+                                    <td colspan="8" class="center-text mute-text">No property holdings logged.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- INSURANCE POLICIES TAB -->
+            <section id="tab-insurance" class="tab-panel">
+                <div class="portfolio-container glass">
+                    <div class="portfolio-header flex-header">
+                        <div>
+                            <h3>Insurance Policies Registry</h3>
+                            <p class="mute-text">Track term life, health, auto, and life-cover insurance products.</p>
+                        </div>
+                        <button class="btn primary" onclick="openManualInsuranceModal()">+ Add Policy</button>
+                    </div>
+                    <div class="table-scroll">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Policy Number</th>
+                                    <th>Institution / Provider</th>
+                                    <th>Policy Name</th>
+                                    <th>Type</th>
+                                    <th class="num-col">Sum Assured (Cover)</th>
+                                    <th class="num-col">Premium Cost</th>
+                                    <th>Frequency</th>
+                                    <th>Due Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="insurance-tbody">
+                                <tr>
+                                    <td colspan="9" class="center-text mute-text">No insurance policies registered.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. CONFIG TEMPLATES TAB -->
+            <section id="tab-templates" class="tab-panel">
+                <div class="templates-layout">
+                    <!-- Left: Saved Templates -->
+                    <div class="templates-list-card glass">
+                        <h3>Saved Templates</h3>
+                        <div class="templates-list" id="templates-list-div">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Right: Add Custom Template Form -->
+                    <div class="custom-template-builder glass">
+                        <h3>Custom Statement Configuration Builder</h3>
+                        <p class="mute-text">Map structural columns for new bank statements without writing code.</p>
+                        
+                        <form id="template-builder-form" onsubmit="saveCustomTemplate(event)">
+                            <div class="form-group">
+                                <label for="tmpl-name">Template Name (e.g., Kotak Bank Savings)</label>
+                                <input type="text" id="tmpl-name" placeholder="Kotak Bank Savings" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="tmpl-inst">Institution / Bank Name</label>
+                                <input type="text" id="tmpl-inst" placeholder="Kotak Mahindra Bank" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="tmpl-keywords">Identification Keywords (comma separated, e.g. KOTAK, Balance, Narration)</label>
+                                <input type="text" id="tmpl-keywords" placeholder="KOTAK, Narration, Balance" required>
+                            </div>
+                            
+                            <h4>Columns Index Mapping (0-indexed offset)</h4>
+                            <div class="form-row-grid column-mapping-grid">
+                                <div class="form-group">
+                                    <label for="col-date">Transaction Date Column</label>
+                                    <input type="number" id="col-date" min="0" value="0" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="col-desc">Narration / Description Column</label>
+                                    <input type="number" id="col-desc" min="0" value="1" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="col-ref">Reference / Cheque Column</label>
+                                    <input type="number" id="col-ref" min="0" value="2" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="col-debit">Debit Amount (Dr) Column</label>
+                                    <input type="number" id="col-debit" min="0" value="3" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="col-credit">Credit Amount (Cr) Column</label>
+                                    <input type="number" id="col-credit" min="0" value="4" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="col-bal">Balance Column</label>
+                                    <input type="number" id="col-bal" min="0" value="5" required>
+                                </div>
+                            </div>
+
+                            <div class="form-row-grid">
+                                <div class="form-group">
+                                    <label for="tmpl-date-fmt">Date format (Strptime format like %d/%m/%Y)</label>
+                                    <input type="text" id="tmpl-date-fmt" value="%d/%m/%Y" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="tmpl-start-regex">Transaction Start Trigger Pattern (Regex)</label>
+                                    <input type="text" id="tmpl-start-regex" value="Date\s+Narration" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="tmpl-end-regex">Transaction End Trigger Pattern (Regex)</label>
+                                    <input type="text" id="tmpl-end-regex" value="Total\s+:" required>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn primary">Save & Register Template</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+        <!-- ==========================================
+             MANUAL ENTRY FORM MODALS
+             ========================================== -->
+
+        <!-- 1. ACCOUNT CREATION MODAL -->
+        <div class="modal" id="account-modal" style="display: none;">
+            <div class="modal-content glass">
+                <div class="modal-header">
+                    <h3>Create New Account / Vault Profile</h3>
+                    <button class="close-btn" onclick="closeModal('account-modal')">&times;</button>
+                </div>
+                <form id="form-add-account" onsubmit="saveManualAccount(event)">
+                    <div class="form-group">
+                        <label for="new-acc-name">Account Name (e.g., HDFC Savings, Zerodha Stocks)</label>
+                        <input type="text" id="new-acc-name" placeholder="HDFC Savings" required>
+                    </div>
+                    <div class="form-row-grid">
+                        <div class="form-group">
+                            <label for="new-acc-inst">Institution / Bank Name</label>
+                            <input type="text" id="new-acc-inst" placeholder="HDFC Bank" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="new-acc-type">Account Type</label>
+                            <select id="new-acc-type" required>
+                                <option value="BANK">Bank Account</option>
+                                <option value="CREDIT_CARD">Credit Card</option>
+                                <option value="FIXED_DEPOSIT">Fixed Deposit</option>
+                                <option value="MUTUAL_FUND">Mutual Fund (AMC)</option>
+                                <option value="STOCK">Stock (Broker)</option>
+                                <option value="GOLD">Gold Holding</option>
+                                <option value="PROVIDENT_FUND">Provident Fund</option>
+                                <option value="REAL_ESTATE">Real Estate</option>
+                                <option value="INSURANCE">Insurance Policy</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-top:12px;">
+                        <label for="new-acc-suffix">Identifier Suffix (Last 4 Digits / Folio / DP ID)</label>
+                        <input type="text" id="new-acc-suffix" placeholder="1234" required>
+                    </div>
+                    <div class="preview-actions">
+                        <button type="button" class="btn secondary" onclick="closeModal('account-modal')">Cancel</button>
+                        <button type="submit" class="btn primary">Create Profile</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- 2. MANUAL TRANSACTION MODAL -->
+        <div class="modal" id="manual-txn-modal" style="display: none;">
+            <div class="modal-content glass">
+                <div class="modal-header">
+                    <h3>Log Manual Ledger Transaction</h3>
+                    <button class="close-btn" onclick="closeModal('manual-txn-modal')">&times;</button>
+                </div>
+                <form id="form-add-txn" onsubmit="saveManualTxn(event)">
+                    <div class="form-group">
+                        <label for="txn-acc-select">Select Account</label>
+                        <select id="txn-acc-select" required></select>
+                        <span class="text-btn" style="text-align:left;margin-top:4px;" onclick="openCreateAccountModal('BANK')">+ Create New Account Profile</span>
+                    </div>
+                    <div class="form-row-grid" style="margin-top:12px;">
+                        <div class="form-group">
+                            <label for="txn-date">Date</label>
+                            <input type="date" id="txn-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="txn-ref">Reference / Cheque No.</label>
+                            <input type="text" id="txn-ref" placeholder="UPI1234...">
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-top:12px;">
+                        <label for="txn-desc">Description / Narration</label>
+                        <input type="text" id="txn-desc" placeholder="Salary, Grocery spend..." required>
+                    </div>
+                    <div class="form-row-grid" style="margin-top:12px;">
+                        <div class="form-group">
+                            <label for="txn-debit">Debit Amount (Withdrawal/Expense)</label>
+                            <input type="number" step="0.01" id="txn-debit" value="0.00" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="txn-credit">Credit Amount (Deposit/Income)</label>
+                            <input type="number" step="0.01" id="txn-credit" value="0.00" min="0">
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-top:12px;">
+                        <label for="txn-cat">Category</label>
+                        <select id="txn-cat">
+                            <option value="Uncategorized">Uncategorized</option>
+                            <option value="Food & Dining">Food & Dining</option>
+                            <option value="Salary">Salary/Income</option>
+                            <option value="Utilities">Utilities/Bills</option>
+                            <option value="Shopping">Shopping</option>
+                            <option value="Transport">Travel/Transport</option>
+                            <option value="Investment">Investment outflow</option>
+                        </select>
+                    </div>
+                    <div class="preview-actions">
+                        <button type="button" class="btn secondary" onclick="closeModal('manual-txn-modal')">Cancel</button>
+                        <button type="submit" class="btn primary">Save Transaction</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- 3. MANUAL FIXED DEPOSIT MODAL -->
+        <div class="modal" id="manual-fd-modal" style="display: none;">
+            <div class="modal-content glass">
+                <div class="modal-header">
+                    <h3>Register Fixed Deposit</h3>
+                    <button class="close-btn" onclick="closeModal('manual-fd-modal')">&times;</button>
+                </div>
+                <form id="form-add-fd" onsubmit="saveManualFD(event)">
+                    <div class="form-group">
+                        <label for="fd-acc-select">Select Bank Account</label>
+                        <select id="fd-acc-select" required></select>
+                    </div>
+                    <div class="form-row-grid" style="margin-top:12px;">
+                        <div class="form-group">
+                            <label for="fd-number">FD Account Number</label>
+                            <input type="text" id="fd-number" placeholder="FD99988..." required>
+                        </div>
+                        <div class="form-group">
+                            <label for="fd-rate">Interest Rate (%)</label>
+                            <input type="number" step="0.01" id="fd-rate" placeholder="7.10" required>
+                        </div>
+                    </div>
+                    <div class="form-row-grid" style="margin-top:12px;">
+                        <div class="form-group">
+                            <label for="fd-principal">Principal Amount</label>
+                            <input type="number" step="0.01" id="fd-principal" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="fd-maturity-amt">Maturity Amount</label>
+                            <input type="number" step="0.01" id="fd-maturity-amt" required>
+                        </div>
+                    </div>
+                    <div class="form-row-grid" style="margin-top:12px;">
+                        <div class="form-group">
+                            <label for="fd-dep-date">Deposit Date</label>
+                            <input type="date" id="fd-dep-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="fd-mat-date">Maturity Date</label>
+                            <input type="date" id="fd-mat-date" required>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-top:12px;">
+                        <label for="fd-status">Status</label>
+                        <select id="fd-status">
+                            <option value="ACTIVE">ACTIVE</option>
+                            <option value="MATURED">MATURED</option>
+                        </select>
+                    </div>
+                    <div class="preview-actions">
+                        <button type="button" class="btn secondary" onclick="closeModal('manual-fd-modal')">Cancel</button>
+                        <button type="submit" class="btn primary">Register FD</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- 4. MANUAL INVESTMENT TRADE MODAL -->
+        <div class="modal" id="manual-trade-modal" style="display: none;">
+            <div class="modal-content glass">
+                <div class="modal-header">
+                    <h3>Log Investment Buy/Sell Trade</h3>
+                    <button class="close-btn" onclick="closeModal('manual-trade-modal')">&times;</button>
+                </div>
+                <form id="form-add-trade" onsubmit="saveManualTrade(event)">
+                    <div class="form-group">
+                        <label for="trade-acc-select">Select Broker/Portfolio Account</label>
+                        <select id="trade-acc-select" required></select>
+                        <span class="text-btn" style="text-align:left;margin-top:4px;" onclick="openCreateAccountModal('STOCK')">+ Create New Portfolio Profile</span>
+                    </div>
+                    <div class="form-row-grid" style="margin-top:12px;">
+                        <div class="form-group">
+                            <label for="trade-name">Asset Name (e.g., TATA MOTORS)</label>
+                            <input type="text" id="trade-name" placeholder="TATA MOTORS" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="trade-symbol">Ticker / Code (e.g., TATAMOTORS)</label>
+                            <input type="text" id="trade-symbol" placeholder="TATAMOTORS" required>
+                        </div>
+                    </div>
+                    <div class="form-row-grid" style="margin-top:12px;">
+                        <div class="form-group">
+                            <label for="trade-date">Trade Date</label>
+                            <input type="date" id="trade-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="trade-type">Trade Action</label>
+                            <select id="trade-type">
+                                <option value="BUY">BUY</option>
+                                <option value="SELL">SELL</option>
+                                <option value="DIVIDEND_REINVEST">DIVIDEND REINVEST</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row-grid" style="margin-top:12px;">
+                        <div class="form-group">
+                            <label for="trade-qty">Quantity / Units</label>
+                            <input type="number" step="0.0001" id="trade-qty" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="trade-price">Execution Price per Unit / NAV</label>
+                            <input type="number" step="0.0001" id="trade-price" required>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-top:12px;">
+                        <label for="trade-total">Total Amount (including charges)</label>
+                        <input type="number" step="0.01" id="trade-total" placeholder="Calculated automatically if left blank">
+                    </div>
+                    <div class="preview-actions">
+                        <button type="button" class="btn secondary" onclick="closeModal('manual-trade-modal')">Cancel</button>
+                        <button type="submit" class="btn primary">Record Trade</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- 5. MANUAL GOLD MODAL -->
+        <div class="modal" id="manual-gold-modal" style="display: none;">
+            <div class="modal-content glass">
+                <div class="modal-header">
+                    <h3>Log Gold Asset</h3>
+                    <button class="close-btn" onclick="closeModal('manual-gold-modal')">&times;</button>
+                </div>
+                <form id="form-add-gold" onsubmit="saveManualGold(event)">
+                    <div class="form-group">
+                        <label for="gold-acc-select">Select Storage/Gold Account</label>
+                        <select id="gold-acc-select" required></select>
+                        <span class="text-btn" style="text-align:left;margin-top:4px;" onclick="openCreateAccountModal('GOLD')">+ Create Gold Storage Account</span>
+                    </div>
+                    <div class="form-row-grid" style="margin-top:12px;">
+                        <div class="form-group">
+                            <label for="gold-type">Gold Type</label>
+                            <select id="gold-type">
+                                <option value="PHYSICAL_BAR">Physical Gold (Coins/Bars)</option>
+                                <option value="SOVEREIGN_GOLD_BOND">Sovereign Gold Bonds (SGB)</option>
+                                <option value="GOLD_ETF">Gold ETF</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="gold-purity">Purity (Carats)</label>
+                            <input type="number" id="gold-purity" value="24" min="1" max="24" required>
+                        </div>
+                    </div>
+                    <div class="form-row-grid" style="margin-top:12px;">
+                        <div class="form-group">
+                            <label for="gold-weight">Weight (Grams)</label>
+                            <input type="number" step="0.01" id="gold-weight" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="gold-invested">Total Invested Cost</label>
+                            <input type="number" step="0.01" id="gold-invested" required>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-top:12px;">
+                        <label for="gold-rate">Current Price per Gram (Local Valuation)</label>
+                        <input type="number" step="0.01" id="gold-rate" placeholder="e.g. 7200" required>
+                    </div>
+                    <div class="preview-actions">
+                        <button type="button" class="btn secondary" onclick="closeModal('manual-gold-modal')">Cancel</button>
+                        <button type="submit" class="btn primary">Save Gold Asset</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- 6. MANUAL PF MODAL -->
+        <div class="modal" id="manual-pf-modal" style="display: none;">
+            <div class="modal-content glass">
+                <div class="modal-header">
+                    <h3>Register Provident Fund Account</h3>
+                    <button class="close-btn" onclick="closeModal('manual-pf-modal')">&times;</button>
+                </div>
+                <form id="form-add-pf" onsubmit="saveManualPF(event)">
+                    <div class="form-group">
+                        <label for="pf-acc-select">Select Account</label>
+                        <select id="pf-acc-select" required></select>
+                        <span class="text-btn" style="text-align:left;margin-top:4px;" onclick="openCreateAccountModal('PROVIDENT_FUND')">+ Create PF Account Profile</span>
+                    </div>
+                    <div class="form-row-grid" style="margin-top:12px;">
+                        <div class="form-group">
+                            <label for="pf-type">Fund Type</label>
+                            <select id="pf-type">
+                                <option value="EPF">Employee Provident Fund (EPF)</option>
+                                <option value="PPF">Public Provident Fund (PPF)</option>
+                                <option value="NPS">National Pension Scheme (NPS)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="pf-rate">Current Interest Rate (%)</label>
+                            <input type="number" step="0.01" id="pf-rate" value="8.15" required>
+                        </div>
+                    </div>
+                    <div class="form-row-grid" style="margin-top:12px;">
+                        <div class="form-group">
+                            <label for="pf-balance">Current Balance</label>
+                            <input type="number" step="0.01" id="pf-balance" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="pf-contrib">Monthly Contribution (Optional)</label>
+                            <input type="number" step="0.01" id="pf-contrib" value="0.00">
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-top:12px;">
+                        <label for="pf-date">Last Updated Date</label>
+                        <input type="date" id="pf-date" required>
+                    </div>
+                    <div class="preview-actions">
+                        <button type="button" class="btn secondary" onclick="closeModal('manual-pf-modal')">Cancel</button>
+                        <button type="submit" class="btn primary">Save PF Account</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- 7. MANUAL REAL ESTATE MODAL -->
+        <div class="modal" id="manual-realestate-modal" style="display: none;">
+            <div class="modal-content glass">
+                <div class="modal-header">
+                    <h3>Register Real Estate Property</h3>
+                    <button class="close-btn" onclick="closeModal('manual-realestate-modal')">&times;</button>
+                </div>
+                <form id="form-add-re" onsubmit="saveManualRealEstate(event)">
+                    <div class="form-group">
+                        <label for="re-acc-select">Select Property Account</label>
+                        <select id="re-acc-select" required></select>
+                        <span class="text-btn" style="text-align:left;margin-top:4px;" onclick="openCreateAccountModal('REAL_ESTATE')">+ Create Real Estate Account Profile</span>
+                    </div>
+                    <div class="form-group" style="margin-top:12px;">
+                        <label for="re-name">Property Name / Address</label>
+                        <input type="text" id="re-name" placeholder="Flat 404, Sea Green Apartments" required>
+                    </div>
+                    <div class="form-row-grid" style="margin-top:12px;">
+                        <div class="form-group">
+                            <label for="re-purchase">Purchase Price</label>
+                            <input type="number" step="0.01" id="re-purchase" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="re-valuation">Current Estimated Market Value</label>
+                            <input type="number" step="0.01" id="re-valuation" required>
+                        </div>
+                    </div>
+                    <div class="form-row-grid" style="margin-top:12px;">
+                        <div class="form-group">
+                            <label for="re-loan">Associated Loan / Mortgage Outstanding</label>
+                            <input type="number" step="0.01" id="re-loan" value="0.00">
+                        </div>
+                        <div class="form-group">
+                            <label for="re-rent">Monthly Rental Income</label>
+                            <input type="number" step="0.01" id="re-rent" value="0.00">
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-top:12px;">
+                        <label for="re-status">Property Status</label>
+                        <select id="re-status">
+                            <option value="SELF_OCCUPIED">Self Occupied</option>
+                            <option value="RENTED">Rented Out</option>
+                            <option value="UNDER_CONSTRUCTION">Under Construction</option>
+                        </select>
+                    </div>
+                    <div class="preview-actions">
+                        <button type="button" class="btn secondary" onclick="closeModal('manual-realestate-modal')">Cancel</button>
+                        <button type="submit" class="btn primary">Register Property</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- 8. MANUAL INSURANCE MODAL -->
+        <div class="modal" id="manual-insurance-modal" style="display: none;">
+            <div class="modal-content glass">
+                <div class="modal-header">
+                    <h3>Register Insurance Policy</h3>
+                    <button class="close-btn" onclick="closeModal('manual-insurance-modal')">&times;</button>
+                </div>
+                <form id="form-add-insurance" onsubmit="saveManualInsurance(event)">
+                    <div class="form-group">
+                        <label for="ins-acc-select">Select Insurance Account</label>
+                        <select id="ins-acc-select" required></select>
+                        <span class="text-btn" style="text-align:left;margin-top:4px;" onclick="openCreateAccountModal('INSURANCE')">+ Create Insurance Profile Account</span>
+                    </div>
+                    <div class="form-row-grid" style="margin-top:12px;">
+                        <div class="form-group">
+                            <label for="ins-number">Policy Number</label>
+                            <input type="text" id="ins-number" placeholder="POL-12345..." required>
+                        </div>
+                        <div class="form-group">
+                            <label for="ins-name">Policy Name / Plan</label>
+                            <input type="text" id="ins-name" placeholder="HDFC Click 2 Protect Term Plan" required>
+                        </div>
+                    </div>
+                    <div class="form-row-grid" style="margin-top:12px;">
+                        <div class="form-group">
+                            <label for="ins-type">Policy Type</label>
+                            <select id="ins-type">
+                                <option value="TERM_LIFE">Term Life Insurance</option>
+                                <option value="HEALTH">Health / Medical Insurance</option>
+                                <option value="MOTOR">Motor / Car Insurance</option>
+                                <option value="ULIP">ULIP / Endowment Plan</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="ins-freq">Premium Payment Frequency</label>
+                            <select id="ins-freq">
+                                <option value="ANNUALLY">Annually</option>
+                                <option value="MONTHLY">Monthly</option>
+                                <option value="QUARTERLY">Quarterly</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row-grid" style="margin-top:12px;">
+                        <div class="form-group">
+                            <label for="ins-cover">Sum Assured (Coverage Value)</label>
+                            <input type="number" step="0.01" id="ins-cover" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="ins-premium">Premium Amount</label>
+                            <input type="number" step="0.01" id="ins-premium" required>
+                        </div>
+                    </div>
+                    <div class="form-row-grid" style="margin-top:12px;">
+                        <div class="form-group">
+                            <label for="ins-due">Next Premium Due Date</label>
+                            <input type="date" id="ins-due" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="ins-maturity">Maturity Date (Optional)</label>
+                            <input type="date" id="ins-maturity">
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-top:12px;">
+                        <label for="ins-status">Policy Status</label>
+                        <select id="ins-status">
+                            <option value="ACTIVE">ACTIVE</option>
+                            <option value="LAPSED">LAPSED</option>
+                        </select>
+                    </div>
+                    <div class="preview-actions">
+                        <button type="button" class="btn secondary" onclick="closeModal('manual-insurance-modal')">Cancel</button>
+                        <button type="submit" class="btn primary">Save Policy</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <script src="app.js"></script>
+</body>
+</html>
