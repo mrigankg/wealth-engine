@@ -48,7 +48,7 @@ Follow these steps to run Wealth Engine locally:
 
 1. **Clone or navigate to the repository directory**:
    ```bash
-   cd "/Users/mrigankg/Work_Area/Personal Finance Tracker"
+   cd "/Users/abc/Work_Area/Personal Finance Tracker"
    ```
 
 2. **Create and activate a python virtual environment**:
